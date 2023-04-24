@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.26)
 cmake_policy(SET CMP0096 NEW) # preserve leading zeroes in version components
 
 # project / version
@@ -44,9 +44,12 @@ else()
 endif()
 
 # C/C++
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
+
 add_definitions(-DREDUMPER_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
                 -DREDUMPER_VERSION_MINOR=${PROJECT_VERSION_MINOR}
                 -DREDUMPER_VERSION_PATCH=${PROJECT_VERSION_PATCH}
@@ -175,7 +178,15 @@ set(includes
 	${FMT_INCLUDE}
 )
 
+add_library(foo)
+target_sources(foo
+  PUBLIC
+    FILE_SET cxx_modules TYPE CXX_MODULES FILES
+    foo.cxx
+)
+
 add_executable(redumper ${sources})
+target_link_libraries(redumper PRIVATE foo)
 target_include_directories(redumper PUBLIC ${includes})
 
 add_custom_target(version_touch ALL COMMAND ${CMAKE_COMMAND} -E touch "${PROJECT_SOURCE_DIR}/version.cc")

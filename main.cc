@@ -14,9 +14,16 @@ using namespace gpsxre;
 
 
 
+import foo;
+
+
+
 int main(int argc, char *argv[])
 {
 	int exit_code(0);
+
+	foo f;
+	f.helloworld();
 
 	Signal::GetInstance();
 
